@@ -18,8 +18,13 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
-    public function create(): View
+    public function create()//: View
     {
+        // Verifique se o usuário está autenticado e se é um administrador
+        if (!Auth::check() || Auth::user()->role !== 'admin') {
+        return redirect('/')->with('error', 'Você não tem permissão para acessar esta página.');
+        }
+
         return view('auth.register');
     }
 
@@ -40,6 +45,7 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => $request->role,
         ]);
 
         event(new Registered($user));

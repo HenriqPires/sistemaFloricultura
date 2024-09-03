@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\EntregadorController;
 use App\Http\Controllers\FuncionarioController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 
 // Rota de welcome, sem autenticação
@@ -18,12 +20,13 @@ Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
 
+// Definir uma rota para o dashboard
+Route::get('/dashboard', function () {
+    return view('dashboard'); // Certifique-se de ter a view 'dashboard.blade.php'
+})->name('dashboard')->middleware('auth');
+
 // Grupo de rotas protegidas por autenticação
 Route::middleware(['auth'])->group(function () {
-    Route::resource('produtos', ProdutoController::class);
-    Route::resource('entregadores', EntregadorController::class);
-    Route::resource('funcionarios', FuncionarioController::class);
-
     // Rota personalizada de exclusão de entregador
     Route::get('delete-entregador/{id}', function ($id) {
         $entregador = App\Models\Entregador::findOrFail($id);
@@ -32,20 +35,49 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-// Definir uma rota para o dashboard
+// Grupo de rotas para o administrador
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', function () {
+        return view('admin.dashboard'); // Certifique-se de ter a view 'admin/dashboard.blade.php'
+    });
+
+    Route::resource('produtos', ProdutoController::class);
+    Route::resource('entregadores', EntregadorController::class);
+    Route::resource('funcionarios', FuncionarioController::class);
+});
+
+// Grupo de rotas para o funcionário
+Route::middleware(['auth', 'role:funcionario'])->group(function () {
+    Route::get('/funcionario/dashboard', function () {
+        return view('funcionario.dashboard'); // Certifique-se de ter a view 'funcionario/dashboard.blade.php'
+    });
+
+    Route::resource('produtos', ProdutoController::class);
+});
+
+// Grupo de rotas para o entregador
+Route::middleware(['auth', 'role:entregador'])->group(function () {
+    Route::get('/entregador/dashboard', function () {
+        return view('entregador.dashboard'); // Certifique-se de ter a view 'entregador/dashboard.blade.php'
+    });
+
+    // Futuramente definirá as rotas para entregador
+});
+
+Route::get('/login/admin', [AuthenticatedSessionController::class, 'createAdmin'])->name('login.admin');
+Route::get('/login/funcionario', [AuthenticatedSessionController::class, 'createFuncionario'])->name('login.funcionario');
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+    Route::post('/register', [RegisteredUserController::class, 'store']);
+});
+
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
 Route::get('/dashboard', function () {
     return view('dashboard'); // Certifique-se de ter a view 'dashboard.blade.php'
 })->name('dashboard')->middleware('auth');
 
-//Route::middleware(['auth', 'admin'])->group(function () {
-    // rotas específicas para admin
-  //  Route::resource('produtos', ProdutoController::class);
-    //Route::resource('entregadores', EntregadorController::class);
-    //Route::resource('funcionarios', FuncionarioController::class);
-//});
-
-//Route::middleware(['auth', 'funcionario'])->group(function () {
-    // rotas específicas para funcionários
-    //Route::resource('produtos', ProdutoController::class);
-  //  Route::resource('entregadores', EntregadorController::class);
-//});
+require __DIR__.'/auth.php';
