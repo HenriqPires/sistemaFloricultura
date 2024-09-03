@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 
 class EntregadorController extends Controller
 {
+
+    public function __construct()
+    {
+        // Aplica o middleware 'auth' a todas as ações do controlador
+        $this->middleware('auth');
+    }
+    
     public function index()
     {
         $entregadores = Entregador::all();

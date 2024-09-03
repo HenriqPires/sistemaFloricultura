@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 class FuncionarioController extends Controller
 {
 
+    public function __construct()
+    {
+        // Aplica o middleware 'auth' a todas as ações do controlador
+        $this->middleware('auth');
+    }
+
     public function index()
     {
         $funcionarios = Funcionario::all();
