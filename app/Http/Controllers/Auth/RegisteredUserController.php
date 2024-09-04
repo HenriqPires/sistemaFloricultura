@@ -18,7 +18,7 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
-    public function create()//: View
+    public function create(): View|RedirectResponse
     {
         // Verifique se o usuário está autenticado e se é um administrador
         if (!Auth::check() || Auth::user()->role !== 'admin') {
@@ -48,10 +48,11 @@ class RegisteredUserController extends Controller
             'role' => $request->role,
         ]);
 
-        event(new Registered($user));
+       // event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        return redirect('/')->with('success', 'Conta criada com sucesso.');
+
     }
 }

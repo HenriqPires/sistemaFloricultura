@@ -49,7 +49,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 // Grupo de rotas para o funcionário
 Route::middleware(['auth', 'role:funcionario'])->group(function () {
     Route::get('/funcionario/dashboard', function () {
-        return view('funcionario.dashboard'); // Certifique-se de ter a view 'funcionario/dashboard.blade.php'
+        return view('funcionarios.dashboard'); // Certifique-se de ter a view 'funcionario/dashboard.blade.php'
     });
 
     Route::resource('produtos', ProdutoController::class);
@@ -58,26 +58,24 @@ Route::middleware(['auth', 'role:funcionario'])->group(function () {
 // Grupo de rotas para o entregador
 Route::middleware(['auth', 'role:entregador'])->group(function () {
     Route::get('/entregador/dashboard', function () {
-        return view('entregador.dashboard'); // Certifique-se de ter a view 'entregador/dashboard.blade.php'
+        return view('entregadores.dashboard'); // Certifique-se de ter a view 'entregador/dashboard.blade.php'
     });
 
-    // Futuramente definirá as rotas para entregador
+    // Futuramente definir rotas para entregador
 });
 
 Route::get('/login/admin', [AuthenticatedSessionController::class, 'createAdmin'])->name('login.admin');
+Route::post('/login/admin', [AuthenticatedSessionController::class, 'storeAdmin'])->name('login.admin.store');
 Route::get('/login/funcionario', [AuthenticatedSessionController::class, 'createFuncionario'])->name('login.funcionario');
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
+//Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('/register', [RegisteredUserController::class, 'store']);
-});
+//});
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-Route::get('/dashboard', function () {
-    return view('dashboard'); // Certifique-se de ter a view 'dashboard.blade.php'
-})->name('dashboard')->middleware('auth');
 
 require __DIR__.'/auth.php';

@@ -28,12 +28,15 @@
         .form-group {
             margin-bottom: 1rem;
         }
+        .register-link {
+            margin-top: 1rem;
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
         <h1 class="text-center">Login de Administrador</h1>
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login.admin.store') }}">
             @csrf
             <div class="form-group">
                 <label for="email">Email:</label>
@@ -45,8 +48,17 @@
             </div>
             <button type="submit" class="btn btn-primary btn-block">Login</button>
         </form>
-    </div>
 
-   
+        <!-- Mostrar o link de registro apenas para administradores autenticados -->
+        @auth
+            @if (Auth::user()->role === 'admin')
+                <div class="register-link text-center">
+                    <a href="{{ route('register') }}" class="btn btn-secondary btn-block">
+                        Registrar Novo Usuário
+                    </a>
+                </div>
+            @endif
+        @endauth
+    </div>
 </body>
 </html>

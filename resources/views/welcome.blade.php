@@ -41,7 +41,7 @@
             <div class="nav-links">
                 <a href="{{ route('login.admin') }}" class="btn btn-primary">Login de Administrador</a>
                 <a href="{{ route('login.funcionario') }}" class="btn btn-secondary">Login de Funcionário</a>
-                <a href="{{ route('register') }}" class="btn btn-success">Registrar</a> <!-- Mostrar somente se o usuário estiver autenticado -->
+                <!--  <a href="{{ route('register') }}" class="btn btn-success">Registrar</a> --> <!-- Mostrar somente se o usuário estiver autenticado -->
             </div>
         @endguest
 
@@ -52,9 +52,6 @@
         @endauth
     </div>
 
-    <!-- Adicione o link para o JavaScript do Bootstrap (opcional) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
 </body>
 </html>
